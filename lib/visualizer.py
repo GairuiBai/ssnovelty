@@ -29,6 +29,7 @@ class Visualizer():
         self.win_size = 256
         self.name = opt.name
         self.opt = opt
+        self.opt.display = True
         if self.opt.display:
             import visdom
             self.vis = visdom.Visdom(server=opt.display_server, port=opt.display_port)
@@ -169,7 +170,7 @@ class Visualizer():
 
         self.vis.images(reals, win=1, opts={'title': 'Reals'})
         self.vis.images(fakes, win=2, opts={'title': 'Fakes'})
-        self.vis.images(fixed, win=3, opts={'title': 'Fixed'})
+        self.vis.images(fixed, win=3, opts={'title': 'Trans'})
 
     def save_current_images(self, epoch, reals, fakes, fixed):
         """ Save images for epoch i.
@@ -183,3 +184,33 @@ class Visualizer():
         vutils.save_image(reals, '%s/reals.png' % self.img_dir, normalize=True)
         vutils.save_image(fakes, '%s/fakes.png' % self.img_dir, normalize=True)
         vutils.save_image(fixed, '%s/fixed_fakes_%03d.png' %(self.img_dir, epoch+1), normalize=True)
+
+    def display_test_images(self, reals, fakes, fixed):
+        """ Display current images.
+
+        Args:
+            epoch (int): Current epoch
+            counter_ratio (float): Ratio to plot the range between two epoch.
+            reals ([FloatTensor]): Real Image
+            fakes ([FloatTensor]): Fake Image
+            fixed ([FloatTensor]): Fixed Fake Image
+        """
+        reals = self.normalize(reals.cpu().numpy())
+        fakes = self.normalize(fakes.cpu().numpy())
+        fixed = self.normalize(fixed.cpu().numpy())
+
+        self.vis.images(reals, win=4, opts={'title': 'Reals'})
+        self.vis.images(fakes, win=5, opts={'title': 'Fakes'})
+        self.vis.images(fixed, win=6, opts={'title': 'Trans'})
+    def save_test_images(self, epoch, reals, fakes, fixed):
+        """ Save images for epoch i.
+
+        Args:
+            epoch ([int])        : Current epoch
+            reals ([FloatTensor]): Real Image
+            fakes ([FloatTensor]): Fake Image
+            fixed ([FloatTensor]): Fixed Fake Image
+        """
+        vutils.save_image(reals, '%s/reals_%03d.png' % (self.tst_img_dir,epoch+1), normalize=True)
+        vutils.save_image(fakes, '%s/fakes_%03d.png' % (self.tst_img_dir,epoch+1), normalize=True)
+        vutils.save_image(fixed, '%s/fixed_fakes_%03d.png' %(self.tst_img_dir, epoch+1), normalize=True)

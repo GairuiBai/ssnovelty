@@ -258,7 +258,6 @@ class NetG(nn.Module):
 
 
 
-
 class Class(nn.Module):
     def __init__(self , opt):
         super(Class, self).__init__()
@@ -299,30 +298,16 @@ class Class(nn.Module):
         )
         self.maxpool = nn.MaxPool2d(4)
         size = int(opt.isize / 32)
-        self.apn = nn.Sequential(
-            nn.Linear(256*size*size, 128),
-            nn.Tanh(),
-            nn.Linear(128, 2),
-            nn.Sigmoid(),
-        )
+        self.fc_layer = nn.Linear(256*size*size,opt.outclassnum)
 
-        self.fc_layer_c = nn.Linear(256*size*size,opt.outclassnum)
-        self.fc_layer_l = nn.Linear(256*size*size,2)
-
-
-
-    def forward(self, input  ):
-        feat = self.con_layer1(input)
-        feat = self.con_layer2(feat)
-        feat = self.con_layer3(feat)
-        feature = self.con_layer4(feat)
-        feat = self.maxpool(feature)
-        x = feat.view(feat.size(0),-1)
-
-        cls = self.fc_layer_c(x)
-        loc = self.apn(x)
-
-        # print(loc)
-        return feature,loc,cls
+    def forward(self, x):
+        x = self.con_layer1(x)
+        x = self.con_layer2(x)
+        x = self.con_layer3(x)
+        x = self.con_layer4(x)
+        x = self.maxpool(x)
+        x = x.view(x.size(0),-1)
+        x = self.fc_layer(x)
+        return x
 
 

@@ -36,7 +36,7 @@ class Options():
                             help='# of input image channels: 3 for RGB and 1 for grayscale')
         self.parser.add_argument('--output_nc', type=int, default=3,
                             help='# of output image channels: 3 for RGB and 1 for grayscale')
-        self.parser.add_argument('--nz', type=int, default=100, help='size of the latent z vector')
+        self.parser.add_argument('--nz', type=int, default=64, help='size of the latent z vector')
         self.parser.add_argument('--ngf', type=int, default=64)
         self.parser.add_argument('--ndf', type=int, default=64)
         self.parser.add_argument('--extralayers', type=int, default=0, help='Number of extra layers on gen and disc')
@@ -69,19 +69,23 @@ class Options():
         ##
         # Train
         self.parser.add_argument('--print_freq', type=int, default=100, help='frequency of showing training results on console')
-        self.parser.add_argument('--save_image_freq', type=int, default=100, help='frequency of saving real and fake images')
+        self.parser.add_argument('--save_image_freq', type=int, default=64, help='frequency of saving real and fake images')
         self.parser.add_argument('--save_test_images', action='store_true', help='Save test images for demo.')
         self.parser.add_argument('--load_weights', action='store_true', help='Load the pretrained weights')
         self.parser.add_argument('--resume', default='', help="path to checkpoints (to continue training)")
         self.parser.add_argument('--phase', type=str, default='train', help='train, val, test, etc')
         self.parser.add_argument('--iter', type=int, default=0, help='Start from iteration i')
-        self.parser.add_argument('--niter', type=int, default=200, help='number of epochs to train for')
+        self.parser.add_argument('--niter', type=int, default=100, help='number of epochs to train for')
         self.parser.add_argument('--beta1', type=float, default=0.5, help='momentum term of adam')
         self.parser.add_argument('--lr', type=float, default=0.0002, help='initial learning rate for adam')
         self.parser.add_argument('--w_bce', type=float, default=1, help='alpha to weight bce loss.')
-        self.parser.add_argument('--w_rec', type=float, default=30, help='alpha to weight reconstruction loss')
+        self.parser.add_argument('--w_rec', type=float, default=50, help='alpha to weight reconstruction loss')
         self.parser.add_argument('--w_enc', type=float, default=5, help='alpha to weight encoder loss')
         self.parser.add_argument('--lr_c', type=float, default=0.0002, help='initial learning rate for adam')
+
+        self.parser.add_argument('--lambda_MMD', type=float, default=1, help='alpha to weight bce loss.')
+
+        self.parser.add_argument('--lambda_rg', type=float, default=16.0, help='alpha to weight encoder loss')
         self.isTrain = True
         self.opt = None
 
